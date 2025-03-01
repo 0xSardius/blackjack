@@ -62,6 +62,60 @@ def main():
             # get the player's move, either H, S, or D
             move = get_move(player_hand, money - bet)
 
+            # Handle the player actions:
+            if move == "D":
+                # If the player is doubling down, they can increase their bet:
+                additional_bet = getBet(min(bet, (money - bet)))
+                bet += additional_bet
+                print(f"Bet increased to {bet}.")
+                print("Bet: ", bet)
+            
+            if move in ("H", "D"):
+                # Hit/Double: draw a card:
+                new_card = deck.pop()
+                rank, suit = new_card
+                print(f"You drew a {rank} of {suit}.")
+                player_hand.append(new_card)
+
+                if get_hand_value(player_hand) > 21:
+                    # player busts
+                    continue
+            
+            if move in ("S", "D"):
+                # stand/doubling down stops the player's turn
+                break
+        
+        if get_hand_value(player_hand) <= 21:
+            while get_hand_value(dealer_hand) < 17:
+                # The dealer hits :
+                print("Dealer hits...")
+                dealer_hand.append(deck.pop())
+                display_hands(player_hand, dealer_hand, False)
+
+                if get_hand_value(dealer_hand) > 21:
+                    break # The dealer has busted.
+                input("Press Enter to continue...")
+                print("\n\n")
+
+        # show the final hands:
+        display_hands(player_hand, dealer_hand, True)
+
+        player_value = get_hand_value(player_hand)
+        dealer_value = get_hand_value(dealer_hand)
+
+        # handle whether the player won, lost or tied:
+        if dealer_value > 21:
+            print(f"Dealer busts! You win ${bet}!")
+            money += bet
+        elif (player_value > 21) or (player_value < dealer_value):
+            print(f"You lose! The dealer wins ${bet}!")
+            money -= bet
+        elif player_value > dealer_value:
+            print(f"You win ${bet}!")
+            money += bet
+        elif player_value == dealer_value:
+            print("It's a tie, the bet is returned to you.")
+        
 
 
 
