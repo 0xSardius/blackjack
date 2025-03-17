@@ -116,6 +116,53 @@ def main():
         elif player_value == dealer_value:
             print("It's a tie, the bet is returned to you.")
         
+        input("Press Enter to continue...")
+        print("\n\n")
+
+def get_bet(max_bet):
+    """Ask the player how much they want to be for this round."""
+    while True: # Keep asking until they enter a valid amount.
+        print(f"How much do you want to bet motherfucker? (1-{max_bet}, or QUIT)")
+        bet = input('> ').upper().strip()
+        if bet == "QUIT":
+            print("Thanks for playing asshole!")
+            sys.exit()
+        
+        if not bet.isdecimal():
+            continue # If the player didn't enter a number, ask again.
+
+        bet = int(bet)
+        if 1 <= bet <= max_bet:
+            return bet # player entered a valid bet
+
+def get_deck():
+    """ Return a list of (rank, suit) tuples for all 52 cards."""
+    deck = []
+    for suit in (HEARTS, DIAMONDS, SPADES, CLUBS):
+        for rank in range(2, 11):
+            deck.append((str(rank), suit))
+        for rank in ("J", "Q", "K", "A"):
+            deck.append((rank, suit))
+    random.shuffle(deck)
+    return deck
+
+def display_hands(player_hand, dealer_hand, show_dealer_hand):
+    """ Show the player's and the dealer's cards. Hide the dealer's first card if show_dealer_hand is False."""
+    print()
+    if show_dealer_hand:
+        print(f"DEALER: {get_hand_value(dealer_hand)}")
+        display_cards(dealer_hand)
+    else:
+        print("DEALER: ????")
+        # Hide the dealer's first card:
+        display_cards([BACKSIDE] + dealer_hand[1:])
+    
+    # Show the player's cards:
+    print(f"PLAYER: {get_hand_value(player_hand)}")
+    display_cards(player_hand)
+
+def get_hand_value(cards):
+
 
 
 
